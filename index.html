@@ -19,7 +19,8 @@
                 <svg class="w-8 h-8 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 <span class="text-xl font-bold tracking-wide">Instant Loan Guarantees</span>
             </div>
-            <div id="nav-user-info" class="hidden flex items-center space-x-4">
+            <div id="nav-user-info" class="hidden flex items-center space-x-3">
+                <span id="admin-badge" class="hidden text-xs bg-red-600 text-white font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Admin Portal</span>
                 <span id="nav-username" class="text-sm font-medium bg-emerald-800 px-3 py-1 rounded-full"></span>
                 <button onclick="logout()" class="text-xs bg-emerald-600 hover:bg-emerald-500 px-3 py-1.5 rounded-lg font-semibold transition">Logout</button>
             </div>
@@ -68,9 +69,12 @@
                 </div>
                 <button type="submit" id="auth-btn" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl shadow-lg shadow-emerald-600/20 transition">Login</button>
             </form>
+            <div class="mt-4 pt-4 border-t text-center">
+                <p class="text-xs text-slate-400">Admin Login: <strong class="text-slate-600">chirodaniel9@gmail.com</strong> / Pass: <strong class="text-slate-600">14415</strong></p>
+            </div>
         </section>
 
-        <!-- VIEW 2: Dashboard -->
+        <!-- VIEW 2: User Dashboard -->
         <section id="view-dashboard" class="hidden space-y-6">
             <!-- Top Summary Card -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -120,6 +124,84 @@
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="loan-tiers-container">
                     <!-- Dynamic Loan Tiers injected here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 3: Admin Portal -->
+        <section id="view-admin" class="hidden space-y-8">
+            <div class="bg-slate-900 text-white rounded-2xl p-6 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold">Admin Management Control Center</h2>
+                    <p class="text-xs text-slate-400 mt-1">Logged in as Administrator (<span class="text-emerald-400 font-semibold">chirodaniel9@gmail.com</span>)</p>
+                </div>
+                <div class="flex space-x-3 text-sm">
+                    <div class="bg-slate-800 px-4 py-2 rounded-xl text-center">
+                        <span class="text-xs text-slate-400 block">Total Users</span>
+                        <strong id="admin-stat-users" class="text-lg text-emerald-400">0</strong>
+                    </div>
+                    <div class="bg-slate-800 px-4 py-2 rounded-xl text-center">
+                        <span class="text-xs text-slate-400 block">Total Applications</span>
+                        <strong id="admin-stat-apps" class="text-lg text-blue-400">0</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Navigation for Admin -->
+            <div class="flex border-b border-slate-200 space-x-6">
+                <button id="admin-tab-payments-btn" onclick="switchAdminTab('payments')" class="pb-3 text-sm font-bold text-emerald-700 border-b-2 border-emerald-700 transition">Registration Payments Records</button>
+                <button id="admin-tab-users-btn" onclick="switchAdminTab('users')" class="pb-3 text-sm font-semibold text-slate-500 hover:text-slate-800 transition">Registered Accounts</button>
+            </div>
+
+            <!-- ADMIN TAB 1: Payments & Applications Table -->
+            <div id="admin-tab-payments" class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-slate-800">Registration Fee & Loan Requests</h3>
+                    <button onclick="renderAdminData()" class="text-xs bg-slate-200 hover:bg-slate-300 px-3 py-1.5 rounded-lg text-slate-700 font-medium">Refresh Records</button>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-600">
+                        <thead class="bg-slate-50 text-slate-500 font-semibold uppercase border-b border-slate-100">
+                            <tr>
+                                <th class="p-4">Timestamp</th>
+                                <th class="p-4">Applicant Name & ID</th>
+                                <th class="p-4">Loan Target Phone</th>
+                                <th class="p-4">Loan Amount</th>
+                                <th class="p-4">Reg Fee</th>
+                                <th class="p-4">M-Pesa Code</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-payments-list" class="divide-y divide-slate-100">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ADMIN TAB 2: Registered Users Table -->
+            <div id="admin-tab-users" class="hidden space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-slate-800">All Registered Accounts</h3>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-600">
+                        <thead class="bg-slate-50 text-slate-500 font-semibold uppercase border-b border-slate-100">
+                            <tr>
+                                <th class="p-4">Full Name</th>
+                                <th class="p-4">Email</th>
+                                <th class="p-4">Phone Number</th>
+                                <th class="p-4">Verification Status</th>
+                                <th class="p-4">Active Loan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-users-list" class="divide-y divide-slate-100">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>
@@ -202,12 +284,35 @@
         let currentUser = null;
         let selectedTierForLoan = null;
 
+        const ADMIN_EMAIL = "chirodaniel9@gmail.com";
+        const ADMIN_PASS = "14415";
+
         // Initialize App state from localStorage
         function initApp() {
+            // Pre-seed admin user if not exists
+            let users = JSON.parse(localStorage.getItem('ilg_users') || '[]');
+            if (!users.find(u => u.email === ADMIN_EMAIL)) {
+                users.push({
+                    email: ADMIN_EMAIL,
+                    phone: "0792844220",
+                    password: ADMIN_PASS,
+                    fullName: "Daniel Chiro (Admin)",
+                    isAdmin: true,
+                    verified: true,
+                    kyc: null,
+                    activeLoan: null
+                });
+                localStorage.setItem('ilg_users', JSON.stringify(users));
+            }
+
             const savedUser = localStorage.getItem('ilg_current_user');
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
-                showDashboard();
+                if (currentUser.email === ADMIN_EMAIL) {
+                    showAdminPortal();
+                } else {
+                    showDashboard();
+                }
             } else {
                 showAuthView();
             }
@@ -247,11 +352,26 @@
         // Handle Auth Submission
         function handleAuth(e) {
             e.preventDefault();
-            const email = document.getElementById('auth-email').value;
-            const phone = document.getElementById('auth-phone').value;
+            const email = document.getElementById('auth-email').value.trim();
+            const phone = document.getElementById('auth-phone').value.trim();
             const password = document.getElementById('auth-password').value;
 
             let users = JSON.parse(localStorage.getItem('ilg_users') || '[]');
+
+            // Check Admin Login
+            if (email === ADMIN_EMAIL && password === ADMIN_PASS) {
+                let adminUser = users.find(u => u.email === ADMIN_EMAIL);
+                if (!adminUser) {
+                    adminUser = { email: ADMIN_EMAIL, phone: "0792844220", password: ADMIN_PASS, fullName: "Daniel Chiro (Admin)", isAdmin: true, verified: true };
+                    users.push(adminUser);
+                    localStorage.setItem('ilg_users', JSON.stringify(users));
+                }
+                currentUser = adminUser;
+                localStorage.setItem('ilg_current_user', JSON.stringify(currentUser));
+                showAlert("Logged in as Admin successfully!", "success");
+                showAdminPortal();
+                return;
+            }
 
             if (activeAuthMode === 'signup') {
                 const fullName = document.getElementById('signup-name').value;
@@ -267,7 +387,8 @@
                     fullName,
                     verified: false,
                     kyc: null,
-                    activeLoan: null
+                    activeLoan: null,
+                    registeredAt: new Date().toLocaleDateString()
                 };
                 users.push(newUser);
                 localStorage.setItem('ilg_users', JSON.stringify(users));
@@ -284,7 +405,12 @@
                 currentUser = user;
                 localStorage.setItem('ilg_current_user', JSON.stringify(currentUser));
                 showAlert("Logged in successfully!", "success");
-                showDashboard();
+                
+                if (currentUser.email === ADMIN_EMAIL) {
+                    showAdminPortal();
+                } else {
+                    showDashboard();
+                }
             }
         }
 
@@ -298,16 +424,31 @@
         function showAuthView() {
             document.getElementById('view-auth').classList.remove('hidden');
             document.getElementById('view-dashboard').classList.add('hidden');
+            document.getElementById('view-admin').classList.add('hidden');
             document.getElementById('nav-user-info').classList.add('hidden');
+            document.getElementById('admin-badge').classList.add('hidden');
         }
 
         function showDashboard() {
             document.getElementById('view-auth').classList.add('hidden');
+            document.getElementById('view-admin').classList.add('hidden');
             document.getElementById('view-dashboard').classList.remove('hidden');
             document.getElementById('nav-user-info').classList.remove('hidden');
+            document.getElementById('admin-badge').classList.add('hidden');
             document.getElementById('nav-username').innerText = currentUser.fullName || currentUser.email;
 
             updateDashboardData();
+        }
+
+        function showAdminPortal() {
+            document.getElementById('view-auth').classList.add('hidden');
+            document.getElementById('view-dashboard').classList.add('hidden');
+            document.getElementById('view-admin').classList.remove('hidden');
+            document.getElementById('nav-user-info').classList.remove('hidden');
+            document.getElementById('admin-badge').classList.remove('hidden');
+            document.getElementById('nav-username').innerText = currentUser.fullName;
+
+            renderAdminData();
         }
 
         function updateDashboardData() {
@@ -385,12 +526,12 @@
 
             currentUser.fullName = fullName;
             currentUser.verified = true;
-            currentUser.kyc = { idNumber, mpesaCode, verifiedAt: new Date().toISOString() };
+            currentUser.kyc = { idNumber, mpesaCode, verifiedAt: new Date().toLocaleString() };
 
             updateUserInStorage();
             closeKycModal();
             updateDashboardData();
-            showAlert("KYC & Registration Fee verified successfully! You can now apply for a loan.", "success");
+            showAlert("KYC & Registration Fee submitted for verification!", "success");
         }
 
         // Loan Application Modal
@@ -427,12 +568,24 @@
         }
 
         function confirmLoanApplication() {
-            currentUser.activeLoan = {
+            const loanRecord = {
                 amount: selectedTierForLoan.amount,
                 regFee: selectedTierForLoan.regFee,
-                status: 'Processing (2 Working Hours)',
-                appliedAt: new Date().toLocaleTimeString()
+                status: 'Pending Verification',
+                appliedAt: new Date().toLocaleString(),
+                idNumber: currentUser.kyc ? currentUser.kyc.idNumber : 'N/A',
+                mpesaCode: currentUser.kyc ? currentUser.kyc.mpesaCode : 'N/A',
+                phone: currentUser.phone,
+                userEmail: currentUser.email,
+                userName: currentUser.fullName
             };
+
+            currentUser.activeLoan = loanRecord;
+
+            // Save record in central payments log
+            let allPayments = JSON.parse(localStorage.getItem('ilg_payments') || '[]');
+            allPayments.push(loanRecord);
+            localStorage.setItem('ilg_payments', JSON.stringify(allPayments));
 
             updateUserInStorage();
             closeLoanModal();
@@ -445,6 +598,103 @@
             users = users.map(u => u.email === currentUser.email ? currentUser : u);
             localStorage.setItem('ilg_users', JSON.stringify(users));
             localStorage.setItem('ilg_current_user', JSON.stringify(currentUser));
+        }
+
+        // ADMIN FUNCTIONS
+        function switchAdminTab(tab) {
+            const payTab = document.getElementById('admin-tab-payments');
+            const usersTab = document.getElementById('admin-tab-users');
+            const payBtn = document.getElementById('admin-tab-payments-btn');
+            const usersBtn = document.getElementById('admin-tab-users-btn');
+
+            if (tab === 'payments') {
+                payTab.classList.remove('hidden');
+                usersTab.classList.add('hidden');
+                payBtn.className = "pb-3 text-sm font-bold text-emerald-700 border-b-2 border-emerald-700 transition";
+                usersBtn.className = "pb-3 text-sm font-semibold text-slate-500 hover:text-slate-800 transition";
+            } else {
+                usersTab.classList.remove('hidden');
+                payTab.classList.add('hidden');
+                usersBtn.className = "pb-3 text-sm font-bold text-emerald-700 border-b-2 border-emerald-700 transition";
+                payBtn.className = "pb-3 text-sm font-semibold text-slate-500 hover:text-slate-800 transition";
+            }
+        }
+
+        function renderAdminData() {
+            const users = JSON.parse(localStorage.getItem('ilg_users') || '[]');
+            const payments = JSON.parse(localStorage.getItem('ilg_payments') || '[]');
+
+            document.getElementById('admin-stat-users').innerText = users.filter(u => u.email !== ADMIN_EMAIL).length;
+            document.getElementById('admin-stat-apps').innerText = payments.length;
+
+            // Render Payments List
+            const paymentsBody = document.getElementById('admin-payments-list');
+            if (payments.length === 0) {
+                paymentsBody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">No payment or loan applications recorded yet.</td></tr>`;
+            } else {
+                paymentsBody.innerHTML = payments.map((p, index) => `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-4 whitespace-nowrap text-slate-400">${p.appliedAt}</td>
+                        <td class="p-4"><strong class="text-slate-800 block">${p.userName}</strong>ID: ${p.idNumber}</td>
+                        <td class="p-4 font-semibold text-slate-700">${p.phone}</td>
+                        <td class="p-4 font-bold text-emerald-700">Ksh ${p.amount.toLocaleString()}</td>
+                        <td class="p-4 font-medium text-slate-600">Ksh ${p.regFee}</td>
+                        <td class="p-4 uppercase font-mono font-bold text-blue-600">${p.mpesaCode}</td>
+                        <td class="p-4">
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
+                                p.status === 'Approved / Disbursed' ? 'bg-emerald-100 text-emerald-800' :
+                                p.status === 'Rejected' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'
+                            }">${p.status}</span>
+                        </td>
+                        <td class="p-4 text-right space-x-1">
+                            ${p.status === 'Pending Verification' ? `
+                                <button onclick="updatePaymentStatus(${index}, 'Approved / Disbursed')" class="px-3 py-1 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-[11px] font-semibold">Approve</button>
+                                <button onclick="updatePaymentStatus(${index}, 'Rejected')" class="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 text-[11px] font-semibold">Reject</button>
+                            ` : `<span class="text-slate-400 text-[11px]">Completed</span>`}
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            // Render Registered Users List
+            const usersBody = document.getElementById('admin-users-list');
+            const clientUsers = users.filter(u => u.email !== ADMIN_EMAIL);
+            if (clientUsers.length === 0) {
+                usersBody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400">No registered client accounts found.</td></tr>`;
+            } else {
+                usersBody.innerHTML = clientUsers.map(u => `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-4 font-semibold text-slate-800">${u.fullName || 'N/A'}</td>
+                        <td class="p-4">${u.email}</td>
+                        <td class="p-4 font-medium">${u.phone}</td>
+                        <td class="p-4">
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${u.verified ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">
+                                ${u.verified ? 'Reg Fee Paid' : 'Pending Fee'}
+                            </span>
+                        </td>
+                        <td class="p-4">${u.activeLoan ? `Ksh ${u.activeLoan.amount.toLocaleString()}` : 'None'}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function updatePaymentStatus(index, newStatus) {
+            let payments = JSON.parse(localStorage.getItem('ilg_payments') || '[]');
+            if (payments[index]) {
+                payments[index].status = newStatus;
+                localStorage.setItem('ilg_payments', JSON.stringify(payments));
+
+                // Synchronize status back to user account
+                let users = JSON.parse(localStorage.getItem('ilg_users') || '[]');
+                let targetUser = users.find(u => u.email === payments[index].userEmail);
+                if (targetUser && targetUser.activeLoan) {
+                    targetUser.activeLoan.status = newStatus;
+                    localStorage.setItem('ilg_users', JSON.stringify(users));
+                }
+
+                renderAdminData();
+                showAlert(`Loan application marked as ${newStatus}`, "success");
+            }
         }
 
         // Notification Message Box Helper (Replaces alert())
